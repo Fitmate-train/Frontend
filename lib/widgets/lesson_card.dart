@@ -37,12 +37,7 @@ class LessonCard extends StatelessWidget {
 
   Widget _buildTrainerImage(String imagePath) {
     if (imagePath.startsWith('http')) {
-      return Image.network(
-        imagePath,
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      );
+      return Image.asset(imagePath, width: 100, height: 100, fit: BoxFit.cover);
     } else {
       return Image.asset(imagePath, width: 100, height: 100, fit: BoxFit.cover);
     }

@@ -1,82 +1,108 @@
 import 'package:flutter/material.dart';
 import '../models/trainer_model.dart';
 import '../widgets/lesson_card.dart';
+import '../widgets/trainer_list.dart';
+import '../widgets/lesson_filter_bar.dart';
 
-class LessonExploreScreen extends StatelessWidget {
+class LessonExploreScreen extends StatefulWidget {
   final List<Trainer> trainers;
+  const LessonExploreScreen({required this.trainers, super.key});
 
-  LessonExploreScreen({required this.trainers});
+  @override
+  State<LessonExploreScreen> createState() => _LessonExploreScreenState();
+}
+
+class _LessonExploreScreenState extends State<LessonExploreScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  int selectedTab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        setState(() => selectedTab = _tabController.index);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('수업 찾기'), centerTitle: true),
-      body: Column(
-        children: [
-          // 🔍 검색창
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: '지역, 지하철역, 센터, 선생님 검색',
-                prefixIcon: Icon(Icons.search),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+      appBar: AppBar(
+        title: const Text('수업 찾기'),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Row(
+            children: [
+              Expanded(
+                child: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.black,
+                  tabs: const [
+                    Tab(text: '전체'),
+                    Tab(text: '헬스'),
+                    Tab(text: '필라테스'),
+                  ],
                 ),
               ),
-            ),
-          ),
 
-          // 🏷️ 필터 탭
-          SizedBox(
-            height: 40,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.symmetric(horizontal: 12),
-              children: [
-                _buildCategoryChip('전체'),
-                _buildCategoryChip('헬스'),
-                _buildCategoryChip('필라테스'),
-                _buildCategoryChip('요가'),
-                _buildCategoryChip('PT'),
-              ],
-            ),
-          ),
+              /// ✅ 여기에 넣으세요!
+              IconButton(
+                icon: Icon(Icons.sort, color: Colors.grey),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LessonFilterBar()),
+                  );
 
-          Divider(),
-
-          // 📋 트레이너 리스트
-          Expanded(
-            child: ListView.builder(
-              itemCount: trainers.length,
-              itemBuilder: (context, index) {
-                final trainer = trainers[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/lesson_detail',
-                      arguments: trainer,
-                    );
-                  },
-                  child: LessonCard(trainer: trainer),
-                );
-              },
-            ),
+                  if (result != null) {
+                    print('필터 결과: $result');
+                    // TODO: 필터 적용 로직 추가
+                  }
+                },
+              ),
+            ],
           ),
+        ),
+      ),
+
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          TrainerList(trainers: widget.trainers), // 전체
+          TrainerList(trainers: widget.trainers), // 헬스 필터 적용
+          TrainerList(trainers: widget.trainers), // 필라테스 필터 적용
         ],
       ),
     );
   }
 
-  Widget _buildCategoryChip(String label) {
-    return Container(
-      margin: EdgeInsets.only(right: 8),
-      child: Chip(
-        label: Text(label),
-        backgroundColor: Colors.grey[200],
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+  // 🔹 여기 이 함수를 같이 추가해줘!
+  Widget _buildCategoryChip(String label, bool isSelected, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(right: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.blue : Colors.grey[200],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
