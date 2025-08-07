@@ -18,6 +18,6 @@ class Trainer {
     required this.reviewCount,
     required this.intro,
     required this.firstLessonRate,
-    required this.tags, // ← 여기도!
+    required this.tags,
   });
 }

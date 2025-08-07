@@ -4,35 +4,47 @@ import '../models/trainer_model.dart';
 class LessonCard extends StatelessWidget {
   final Trainer trainer;
 
-  const LessonCard({required this.trainer, Key? key}) : super(key: key);
+  const LessonCard({required this.trainer});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        leading:
-            trainer.imageUrls.isNotEmpty
-                ? Image.network(
-                  trainer.imageUrls[0],
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                )
-                : Icon(Icons.person),
-        title: Text(trainer.name),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [Text(trainer.location), Text('${trainer.price}원/1시간')],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      margin: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Padding(
+        padding: EdgeInsets.all(12),
+        child: Row(
           children: [
-            Text(trainer.type, style: TextStyle(fontWeight: FontWeight.bold)),
-            Icon(Icons.chevron_right),
+            _buildTrainerImage(trainer.imageUrls.first),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    trainer.name,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(trainer.intro),
+                  Text('${trainer.price}원'),
+                ],
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _buildTrainerImage(String imagePath) {
+    if (imagePath.startsWith('http')) {
+      return Image.network(
+        imagePath,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Image.asset(imagePath, width: 100, height: 100, fit: BoxFit.cover);
+    }
   }
 }
