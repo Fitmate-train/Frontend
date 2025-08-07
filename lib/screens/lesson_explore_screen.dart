@@ -44,6 +44,7 @@ class _LessonExploreScreenState extends State<LessonExploreScreen>
                     color: Colors.blueAccent,
                     borderRadius: BorderRadius.circular(20),
                   ),
+                  indicatorSize: TabBarIndicatorSize.tab,
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,
                   tabs: const [
