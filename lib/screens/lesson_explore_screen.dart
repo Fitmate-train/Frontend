@@ -78,8 +78,26 @@ class _LessonExploreScreenState extends State<LessonExploreScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          TrainerList(trainers: widget.trainers), // 전체
-          TrainerList(trainers: widget.trainers), // 헬스 필터 적용
+          TrainerList(
+            trainers: widget.trainers,
+            onTapTrainer: (trainer) {
+              Navigator.pushNamed(
+                context,
+                '/lesson_detail',
+                arguments: trainer,
+              );
+            },
+          ), // 전체
+          TrainerList(
+            trainers: widget.trainers,
+            onTapTrainer: (trainer) {
+              Navigator.pushNamed(
+                context,
+                '/lesson_detail',
+                arguments: trainer,
+              );
+            },
+          ), // 헬스 필터 적용
           TrainerList(trainers: widget.trainers), // 필라테스 필터 적용
         ],
       ),
