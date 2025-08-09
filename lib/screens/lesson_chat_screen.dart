@@ -59,9 +59,7 @@ class _LessonChatScreenState extends State<LessonChatScreen> {
     final trainer = ModalRoute.of(context)!.settings.arguments as Trainer?;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(trainer != null ? '${trainer.name} 트레이너' : '채팅'),
-      ),
+      appBar: AppBar(title: Text(trainer != null ? '${trainer.name}' : '채팅')),
       body: Column(
         children: [
           Expanded(
