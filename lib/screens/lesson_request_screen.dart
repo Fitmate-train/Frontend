@@ -202,13 +202,17 @@ class _LessonRequestScreenState extends State<LessonRequestScreen> {
     // print(answers);
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder:
           (_) => AlertDialog(
             title: const Text('요청 완료'),
             content: const Text('트레이너에게 요청이 전송되었습니다.'),
             actions: [
               TextButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  Navigator.pop(context); // AlertDialog 닫기
+                  Navigator.pop(context); // 현재 화면 닫기 (필요시)
+                },
                 child: const Text('확인'),
               ),
             ],
@@ -220,7 +224,21 @@ class _LessonRequestScreenState extends State<LessonRequestScreen> {
   Widget _buildBottomPanel() {
     if (stepIndex >= steps.length) {
       // 모든 단계 끝 → 요약 + 전송 버튼
-      return _SummaryPanel(answers: answers, onSubmit: _submitAll);
+      final maxHeight = MediaQuery.of(context).size.height * 0.60;
+      return SafeArea(
+        top: false,
+        child: Container(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+            boxShadow: [BoxShadow(blurRadius: 8, color: Colors.black12)],
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          child: _SummaryPanel(answers: answers, onSubmit: _submitAll),
+        ),
+      );
     }
 
     final q = steps[stepIndex];
@@ -759,7 +777,10 @@ class _SummaryPanel extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text('수업 요청 보내기', style: TextStyle(fontSize: 16)),
+                child: const Text(
+                  '수업 요청 보내기',
+                  style: TextStyle(fontSize: 16, color: Colors.white),
+                ),
               ),
             ),
           ],
@@ -810,7 +831,13 @@ class _NextButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: const Text('다음', style: TextStyle(fontSize: 16)),
+        child: const Text(
+          '다음',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white, // 글자색 흰색
+          ),
+        ),
       ),
     );
   }
