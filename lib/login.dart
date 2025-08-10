@@ -17,20 +17,29 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       OAuthToken token;
 
+      print("카카오톡 설치 여부 확인 중...");
+
       if (await isKakaoTalkInstalled()) {
+        print("카카오톡 설치됨 → loginWithKakaoTalk 호출");
         token = await UserApi.instance.loginWithKakaoTalk();
       } else {
+        print("카카오톡 미설치 → loginWithKakaoAccount 호출");
         token = await UserApi.instance.loginWithKakaoAccount();
       }
+      print("로그인 성공, 토큰: ${token.accessToken}");
 
       await UserApi.instance.loginWithNewScopes([
         'profile_nickname',
         'profile_image',
       ]);
+      print("추가 스코프 요청 성공");
 
+      print("사용자 정보 조회 중...");
       final me = await UserApi.instance.me();
-      final nickname = me.kakaoAccount?.profile?.nickname ?? '사용자';
+      print("조회된 사용자 정보: ${me.toJson()}");
 
+      final nickname = me.kakaoAccount?.profile?.nickname ?? '사용자';
+      print("닉네임: $nickname");
       if (!mounted) return;
 
       Navigator.pushReplacementNamed(context, '/');
@@ -38,6 +47,8 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text('$nickname님 환영해요!')));
     } catch (e) {
+      print("로그인 중 오류 발생: $e");
+
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
