@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// ✅ 사용자 취소 감지 함수 (전역)
 bool _isUserCancelled(Object e) {
@@ -108,6 +109,10 @@ class _LoginScreenState extends State<LoginScreen> {
       // 최종 사용자 정보 조회
       final me = await UserApi.instance.me();
       final nickname = me.kakaoAccount?.profile?.nickname ?? '사용자';
+
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('nickname', nickname);
+
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/');
       ScaffoldMessenger.of(
