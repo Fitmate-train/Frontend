@@ -17,26 +17,22 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       OAuthToken token;
 
-      // 1) 로그인 (스코프 인자 없이)
       if (await isKakaoTalkInstalled()) {
         token = await UserApi.instance.loginWithKakaoTalk();
       } else {
         token = await UserApi.instance.loginWithKakaoAccount();
       }
 
-      // 2) 필요한 권한 추가 동의 요청
       await UserApi.instance.loginWithNewScopes([
         'profile_nickname',
         'profile_image',
       ]);
 
-      // 3) 프로필 조회
       final me = await UserApi.instance.me();
       final nickname = me.kakaoAccount?.profile?.nickname ?? '사용자';
 
       if (!mounted) return;
 
-      // 예시: 홈으로 이동 + 환영 스낵바
       Navigator.pushReplacementNamed(context, '/');
       ScaffoldMessenger.of(
         context,
