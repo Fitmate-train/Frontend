@@ -145,27 +145,60 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 24),
 
                 // 트레이너 랭킹
+                // --- 랭킹 섹션 교체 ---
                 const Text(
                   '이달의 트레이너 랭킹',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
+
                 Column(
                   children:
-                      dummyTrainers.map((trainer) {
+                      dummyTrainers.take(3).toList().asMap().entries.map((
+                        entry,
+                      ) {
+                        final rank = entry.key + 1;
+                        final t = entry.value;
+
+                        const medalEmojis = ['🥇', '🥈', '🥉'];
+                        const medalColors = [
+                          Color(0xFFFFD700), // Gold
+                          Color(0xFFC0C0C0), // Silver
+                          Color(0xFFCD7F32), // Bronze
+                        ];
+                        final color = medalColors[rank - 1];
+                        final emoji = medalEmojis[rank - 1];
+
                         return Container(
                           margin: const EdgeInsets.only(bottom: 12),
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.grey[200],
+                            color: color.withOpacity(0.08),
+                            border: Border.all(color: color.withOpacity(0.6)),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              // 메달 배지
+                              CircleAvatar(
+                                radius: 16,
+                                backgroundColor: Colors.white,
+                                child: Text(
+                                  emoji,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+
+                              // 썸네일
                               Container(
                                 width: 60,
                                 height: 60,
-                                color: Colors.grey,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                                 alignment: Alignment.center,
                                 child: const Text(
                                   '트레이너\n이미지',
@@ -173,37 +206,56 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               const SizedBox(width: 12),
+
+                              // 본문(이 부분을 Expanded로 감싸서 넘치지 않게)
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    // 이름 + 가격 (가격은 Flexible + ellipsis)
                                     Row(
                                       children: [
-                                        Text(
-                                          trainer.name,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
+                                        Expanded(
+                                          child: Text(
+                                            t.name,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          '${trainer.firstLessonRate.toStringAsFixed(0)}원/1시간',
-                                          style: const TextStyle(
-                                            color: Colors.purple,
+                                        const SizedBox(width: 6),
+                                        Flexible(
+                                          child: Text(
+                                            '${t.firstLessonRate.toStringAsFixed(0)}원/1시간',
+                                            style: const TextStyle(
+                                              color: Colors.purple,
+                                            ),
+                                            maxLines: 1,
+                                            softWrap: false,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 4),
-                                    Text('📍${trainer.location} 수업'),
+
+                                    // 위치(길면 줄임)
+                                    Text(
+                                      '📍${t.location} 수업',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                     const SizedBox(height: 4),
-                                    Row(
+
+                                    // 태그는 Wrap으로 줄바꿈 허용 → 가로 오버플로우 방지
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
                                       children:
-                                          trainer.tags.map((tag) {
+                                          t.tags.map((tag) {
                                             return Container(
-                                              margin: const EdgeInsets.only(
-                                                right: 8,
-                                              ),
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                     horizontal: 8,
@@ -221,23 +273,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               ),
-                              Column(
-                                children: [
-                                  TextButton(
-                                    onPressed:
-                                        () => Navigator.pushNamed(
-                                          context,
-                                          '/lesson_detail',
-                                          arguments: trainer,
-                                        ),
-                                    child: Row(
-                                      children: const [
-                                        Text('상세보기'),
-                                        Icon(Icons.chevron_right),
-                                      ],
+
+                              const SizedBox(width: 8),
+
+                              // '상세보기' 버튼 (최소 크기/패딩 제거 + mainAxisSize.min)
+                              TextButton(
+                                onPressed:
+                                    () => Navigator.pushNamed(
+                                      context,
+                                      '/lesson_detail',
+                                      arguments: t,
                                     ),
-                                  ),
-                                ],
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  minimumSize: const Size(0, 0),
+                                  tapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    Text('상세보기'),
+                                    Icon(Icons.chevron_right, size: 18),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
