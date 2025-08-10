@@ -22,19 +22,20 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
+<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleURLName</key>
+        <string>kakaokompassauth</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+
 				<string>kakao725eb3abc1c588429827d5e803c3c6e7</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>1.0.0</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakao725eb3abc1c588429827d5e803c3c6e7</string>
