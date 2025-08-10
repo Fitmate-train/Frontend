@@ -17,7 +17,7 @@ class LessonDetailScreen extends StatelessWidget {
               options: CarouselOptions(height: 200, viewportFraction: 1.0),
               items:
                   trainer.imageUrls.map((url) {
-                    return Image.network(
+                    return Image.asset(
                       url,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -70,10 +70,7 @@ class LessonDetailScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ElevatedButton(
           onPressed: () {
-            // 예: 채팅 시작 or 예약 요청 흐름으로 이동
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('예약 요청 기능 구현 예정')));
+            Navigator.pushNamed(context, '/lesson_chat', arguments: trainer);
           },
           child: Text('예약 요청하기'),
           style: ElevatedButton.styleFrom(minimumSize: Size.fromHeight(50)),
